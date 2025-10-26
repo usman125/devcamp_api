@@ -3,7 +3,6 @@ const path = require("path");
 const express = require("express");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
-const colors = require("colors");
 const fileUpload = require("express-fileupload");
 const connectDB = require("./config/database");
 const cookieParser = require("cookie-parser");
@@ -100,13 +99,12 @@ app.use(errorHandler);
 const server = app.listen(PORT, () => {
   console.log(
     `Server running in ${process.env.NODE_ENV} mode on port ${process.env.PORT}`
-      .yellow.bold
   );
 });
 
 // handle Unhandled promise rejections
 process.on("unhandledRejection", (err, promise) => {
-  console.log(`Unhandled Rejection: ${err.message}`.red);
+  console.log(`Unhandled Rejection: ${err.message}`);
   // close server and exit
   server.close(() => {
     process.exit(1);
