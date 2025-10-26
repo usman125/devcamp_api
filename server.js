@@ -71,16 +71,11 @@ app.use(xss());
 const limiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 mins
   max: 100,
-  standardHeaders: true,
-  legacyHeaders: false,
-  // Add this to use the X-Forwarded-For header
   keyGenerator: (req) => {
-    return (
-      req.headers["x-forwarded-for"]?.split(",")[0].trim() ||
-      req.headers["x-real-ip"] ||
-      req.ip
-    );
+    // Using only user ID, no IP needed
+    return req.user?.id || "anonymous";
   },
+  validate: { ip: false },
 });
 app.use(limiter);
 
