@@ -60,7 +60,14 @@ app.use("/api/v1/users", users);
 app.use("/api/v1/reviews", reviews);
 
 // Sanitize data
-app.use(mongoSanitize());
+app.use(
+  mongoSanitize({
+    replaceWith: "_",
+    onSanitize: ({ req, key }) => {
+      console.warn(`Sanitized key: ${key}`);
+    },
+  })
+);
 
 // Set security headers
 app.use(helmet());
