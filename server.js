@@ -71,11 +71,15 @@ app.use(xss());
 const limiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 mins
   max: 100,
+  // keyGenerator: (req) => {
+  //   // Using only user ID, no IP needed
+  //   return req.user?.id || "anonymous";
+  // },
+  validate: { ip: false, trustProxy: false },
+  // Use x-forwarded-for from Vercel
   keyGenerator: (req) => {
-    // Using only user ID, no IP needed
-    return req.user?.id || "anonymous";
+    return req.headers["x-forwarded-for"] || "unknown";
   },
-  validate: { ip: false },
 });
 app.use(limiter);
 
