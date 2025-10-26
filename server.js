@@ -32,11 +32,11 @@ const reviews = require("./routes/reviews");
 const PORT = process.env.PORT || 5000;
 
 const app = express();
-// app.set("query parser", "extended");
+app.set("query parser", "extended");
 
 // Body parser
 app.use(express.json());
-app.use(express.urlencoded({ extended: true })); // ✅ Add this for query parsing
+// app.use(express.urlencoded({ extended: true })); // ✅ Add this for query parsing
 
 // Cookie parser
 app.use(cookieParser());
