@@ -59,17 +59,13 @@ app.use("/api/v1/users", users);
 app.use("/api/v1/reviews", reviews);
 
 // Sanitize data
-// app.use(
-//   mongoSanitize({
-//     replaceWith: "_",
-//   })
-// );
+app.use(mongoSanitize());
 
 // Set security headers
 app.use(helmet());
 
 // Prevent XSS attacks
-// app.use(xss());
+app.use(xss());
 
 // Rate limiting
 const limiter = rateLimit({
