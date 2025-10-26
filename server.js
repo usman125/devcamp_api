@@ -76,6 +76,16 @@ app.use(helmet());
 const limiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 mins
   max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  // Add this to use the X-Forwarded-For header
+  keyGenerator: (req) => {
+    return (
+      req.headers["x-forwarded-for"]?.split(",")[0].trim() ||
+      req.headers["x-real-ip"] ||
+      req.ip
+    );
+  },
 });
 app.use(limiter);
 
