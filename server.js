@@ -70,7 +70,7 @@ app.use("/api/v1/reviews", reviews);
 app.use(helmet());
 
 // Prevent XSS attacks
-app.use(xss());
+// app.use(xss());
 
 // Rate limiting
 const limiter = rateLimit({
