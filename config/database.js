@@ -8,7 +8,7 @@ const connectDB = async () => {
     serverSelectionTimeoutMS: 5000,
     socketTimeoutMS: 45000,
   });
-  console.loßg(
+  console.log(
     `MongoDB Connected: ${(await conn).connection.host}`.cyan.underline.bold
   );
 };
