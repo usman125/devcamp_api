@@ -11,6 +11,7 @@ const errorHandler = require("./middleware/error");
 const mongoSanitize = require("express-mongo-sanitize");
 const helmet = require("helmet");
 const xss = require("xss-clean");
+
 const rateLimit = require("express-rate-limit");
 const hpp = require("hpp");
 const cors = require("cors");
@@ -31,10 +32,11 @@ const reviews = require("./routes/reviews");
 const PORT = process.env.PORT || 5000;
 
 const app = express();
+// app.set("query parser", "extended");
 
-// Body parser - MUST be early
+// Body parser
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true })); // ✅ Add this for query parsing
 
 // Cookie parser
 app.use(cookieParser());
@@ -43,6 +45,19 @@ app.use(cookieParser());
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
+
+// File upload
+app.use(fileUpload());
+
+// set Static folder
+app.use(express.static(path.join(__dirname, "public")));
+
+// Mount routes
+app.use("/api/v1/bootcamps", bootcamps);
+app.use("/api/v1/courses", courses);
+app.use("/api/v1/auth", auth);
+app.use("/api/v1/users", users);
+app.use("/api/v1/reviews", reviews);
 
 // Sanitize data
 app.use(mongoSanitize());
@@ -60,58 +75,26 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-// Prevent http param pollution - THIS WAS THE PROBLEM
-// Either remove it or whitelist your query params
-app.use(
-  hpp({
-    whitelist: [
-      "select",
-      "sort",
-      "limit",
-      "page",
-      "averageCost",
-      "averageRating",
-    ],
-  })
-);
+// Prevent http param pollution
+app.use(hpp());
 
-// Enable CORS
+// use cors
 app.use(cors());
 
-// File upload
-app.use(fileUpload());
-
-// Set Static folder
-app.use(express.static(path.join(__dirname, "public")));
-
-// Mount routes - AFTER all middleware
-app.use("/api/v1/bootcamps", bootcamps);
-app.use("/api/v1/courses", courses);
-app.use("/api/v1/auth", auth);
-app.use("/api/v1/users", users);
-app.use("/api/v1/reviews", reviews);
-
-// Error handler - MUST be last
 app.use(errorHandler);
 
-// Export for Vercel
-module.exports = app;
+const server = app.listen(PORT, () => {
+  console.log(
+    `Server running in ${process.env.NODE_ENV} mode on port ${process.env.PORT}`
+      .yellow.bold
+  );
+});
 
-// Only listen if not in Vercel
-if (require.main === module) {
-  const server = app.listen(PORT, () => {
-    console.log(
-      `Server running in ${process.env.NODE_ENV} mode on port ${process.env.PORT}`
-        .yellow.bold
-    );
+// handle Unhandled promise rejections
+process.on("unhandledRejection", (err, promise) => {
+  console.log(`Unhandled Rejection: ${err.message}`.red);
+  // close server and exit
+  server.close(() => {
+    process.exit(1);
   });
-
-  // handle Unhandled promise rejections
-  process.on("unhandledRejection", (err, promise) => {
-    console.log(`Unhandled Rejection: ${err.message}`.red);
-    // close server and exit
-    server.close(() => {
-      process.exit(1);
-    });
-  });
-}
+});
