@@ -14,9 +14,18 @@ const xss = require("xss-clean");
 const rateLimit = require("express-rate-limit");
 const hpp = require("hpp");
 const cors = require("cors");
-const swaggerUi = require("swagger-ui-express");
 
-const swaggerDocument = require("./subkontinent-Devcamper-prod-1.0.0-resolved.json");
+const fs = require("fs");
+
+const swaggerUi = require("swagger-ui-express");
+const YAML = require("yamljs");
+
+const swaggerDocument = YAML.parse(
+  fs.readFileSync(
+    path.join(__dirname, "subkontinent-Devcamper-1.0.0-prod.yaml"),
+    "utf8"
+  )
+);
 
 // Load env vars
 dotenv.config({ path: "./config/config.env" });
