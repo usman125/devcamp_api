@@ -14,6 +14,9 @@ const xss = require("xss-clean");
 const rateLimit = require("express-rate-limit");
 const hpp = require("hpp");
 const cors = require("cors");
+const swaggerUi = require("swagger-ui-express");
+
+const swaggerDocument = require("./subkontinent-Devcamper-prod-1.0.0-resolved.json");
 
 // Load env vars
 dotenv.config({ path: "./config/config.env" });
@@ -32,6 +35,9 @@ const PORT = process.env.PORT || 5000;
 
 const app = express();
 app.set("query parser", "extended");
+
+// Swagger
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Body parser
 app.use(express.json());
