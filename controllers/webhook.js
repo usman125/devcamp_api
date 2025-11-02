@@ -4,6 +4,7 @@ const FormData = require("form-data"); // form-data v4.0.1
 const Mailgun = require("mailgun"); // mailgun.js v11.1.0
 
 const crypto = require("crypto");
+const emailStore = {};
 
 // @desc update a user
 // @route PUT /api/v1/webhook/sendemail
@@ -16,7 +17,6 @@ exports.sendMailgunEmail = asyncHandler(async (req, res, next) => {
 // @route PUT /api/v1/webhook/email
 // @access Public
 exports.webhookMailgun = asyncHandler(async (req, res, next) => {
-  const emailStore = {};
   // Parse raw body as URL-encoded (Mailgun sends form data)
   console.log(req.body);
   // const body = new URLSearchParams(req.body);
