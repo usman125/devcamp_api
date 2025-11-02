@@ -36,14 +36,14 @@ const webhook = require("./routes/webhook");
 const PORT = process.env.PORT || 5000;
 
 const app = express();
-app.set("query parser", "extended");
+// app.set("query parser", "extended");
 
 // Swagger
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Body parser
 app.use(express.json());
-// app.use(express.urlencoded({ extended: true })); // ✅ Add this for query parsing
+app.use(express.urlencoded({ extended: true })); // ✅ Add this for query parsing
 
 // Cookie parser
 app.use(cookieParser());

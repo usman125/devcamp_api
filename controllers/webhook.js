@@ -17,24 +17,32 @@ exports.webhookMailgun = asyncHandler(async (req, res, next) => {
   const emailStore = {};
   // Parse raw body as URL-encoded (Mailgun sends form data)
   console.log(req.body);
-  const body = new URLSearchParams(req.body);
-  const to = body.get("recipient");
-  const from = body.get("sender");
-  const subject = body.get("subject");
-  const bodyPlain = body.get("body-plain");
-  const bodyHtml = body.get("body-html");
+  // const body = new URLSearchParams(req.body);
+  // const to = body.get("recipient");
+  // const from = body.get("sender");
+  // const subject = body.get("subject");
+  // const bodyPlain = body.get("body-plain");
+  // const bodyHtml = body.get("body-html");
+
+  const {
+    recipient,
+    sender,
+    subject,
+    "body-plain": bodyPlain,
+    "body-html": bodyHtml,
+  } = req.body;
 
   // Save email
-  if (!emailStore[to]) emailStore[to] = [];
+  if (!emailStore[recipient]) emailStore[to] = [];
   emailStore[to].push({
     id: crypto.randomUUID(),
-    from,
+    sender,
     subject,
     bodyPlain,
     bodyHtml,
     receivedAt: new Date().toISOString(),
   });
 
-  console.log(`📧 Received email for ${to} from ${from} ${bodyPlain}`);
+  console.log(`📧 Received email for ${recipient} from ${sender} ${bodyPlain}`);
   res.status(200).json({ success: true, data: emailStore });
 });
