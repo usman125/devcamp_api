@@ -17,34 +17,36 @@ exports.sendMailgunEmail = asyncHandler(async (req, res, next) => {
 // @route PUT /api/v1/webhook/email
 // @access Public
 exports.webhookMailgun = asyncHandler(async (req, res, next) => {
-  // Parse raw body as URL-encoded (Mailgun sends form data)
-  console.log(req.body);
-  // const body = new URLSearchParams(req.body);
-  // const to = body.get("recipient");
-  // const from = body.get("sender");
-  // const subject = body.get("subject");
-  // const bodyPlain = body.get("body-plain");
-  // const bodyHtml = body.get("body-html");
-
   const {
     recipient,
     sender,
     subject,
-    // "body-plain": bodyPlain,
-    // "body-html": bodyHtml,
+    "body-plain": bodyPlain,
+    "body-html": bodyHtml,
   } = req.body;
 
-  // Save email
+  if (!recipient) {
+    console.warn("Mailgun webhook: no recipient");
+    return res.status(200).send("OK");
+  }
+
   if (!emailStore[recipient]) emailStore[recipient] = [];
   emailStore[recipient].push({
     id: crypto.randomUUID(),
-    sender,
+    from: sender,
     subject,
-    "body-plain": req.body.bodyPlain,
-    "body-html": req.body.bodyHtml,
+    bodyPlain,
+    bodyHtml,
     receivedAt: new Date().toISOString(),
   });
 
-  console.log(`📧 Received email for ${recipient} from ${sender} ${bodyPlain}`);
-  res.status(200).json({ success: true, data: emailStore });
+  console.log(
+    `📧 Received email for ${recipient} from ${sender}: ${bodyPlain?.substring(
+      0,
+      60
+    )}...`
+  );
+
+  // Mailgun expects plain text response
+  res.status(200).json({ status: "OK", data: emailStore });
 });
