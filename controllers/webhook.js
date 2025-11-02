@@ -30,18 +30,18 @@ exports.webhookMailgun = asyncHandler(async (req, res, next) => {
     recipient,
     sender,
     subject,
-    "body-plain": bodyPlain,
-    "body-html": bodyHtml,
+    // "body-plain": bodyPlain,
+    // "body-html": bodyHtml,
   } = req.body;
 
   // Save email
-  if (!emailStore[recipient]) emailStore[to] = [];
-  emailStore[to].push({
+  if (!emailStore[recipient]) emailStore[recipient] = [];
+  emailStore[recipient].push({
     id: crypto.randomUUID(),
     sender,
     subject,
-    bodyPlain,
-    bodyHtml,
+    "body-plain": req.body.bodyPlain,
+    "body-html": req.body.bodyHtml,
     receivedAt: new Date().toISOString(),
   });
 
