@@ -41,10 +41,7 @@ exports.webhookMailgun = asyncHandler(async (req, res, next) => {
   });
 
   console.log(
-    `📧 Received email for ${recipient} from ${sender}: ${bodyPlain?.substring(
-      0,
-      60
-    )}...`
+    `📧 Received email for ${recipient} from ${sender}: ${bodyPlain}`
   );
 
   // Mailgun expects plain text response
