@@ -14,6 +14,7 @@ exports.sendMailgunEmail = asyncHandler(async (req, res, next) => {
 // @route PUT /api/v1/webhook/email
 // @access Public
 exports.webhookMailgun = asyncHandler(async (req, res, next) => {
+  const emailStore = {};
   // Parse raw body as URL-encoded (Mailgun sends form data)
   const body = new URLSearchParams(req.body);
   const to = body.get("recipient");
@@ -34,5 +35,5 @@ exports.webhookMailgun = asyncHandler(async (req, res, next) => {
   });
 
   console.log(`📧 Received email for ${to} from ${from} ${bodyPlain}`);
-  res.status(200).send("OK");
+  res.status(200).json({ success: true, data: emailStore });
 });
