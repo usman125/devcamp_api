@@ -1,7 +1,7 @@
 const asyncHandler = require("../middleware/async");
 
 const FormData = require("form-data"); // form-data v4.0.1
-const Mailgun = require("mailgun.js"); // mailgun.js v11.1.0
+const Mailgun = require("mailgun"); // mailgun.js v11.1.0
 
 // @desc update a user
 // @route PUT /api/v1/webhook/sendemail
